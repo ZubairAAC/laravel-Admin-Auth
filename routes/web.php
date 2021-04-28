@@ -20,3 +20,15 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+Route::group(['prefix'=>'admin'], function(){
+    Route::group(['middleware'=>'guest:admin'], function(){
+        Route::get('login',[App\Http\Controllers\AdminAuthenticate::class,'loginForm'])->name('admin.login');
+        Route::post('login',[App\Http\Controllers\AdminAuthenticate::class,'authenticate'])->name('admin.auth');
+         Route::group(['middleware'=>'admin.auth'], function(){
+             Route::view('dashboard','admin.dashboard')->name('dashboard');
+
+         });
+    });
+}
+);
